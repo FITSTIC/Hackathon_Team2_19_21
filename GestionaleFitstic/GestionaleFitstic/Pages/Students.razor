@@ -2,14 +2,12 @@
 
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
-
 @inject ApplicationDbContext db
 @inject StudentService studentService
 
 
 
 <h3>Inserisci un nuovo partecipante</h3>
-
 <!--FORM-->
 <EditForm Model="@s" OnSubmit="()=> SaveStudent()">
     <div class="form-group">
@@ -47,24 +45,25 @@
     <div class="form-group">
         <label>Anno di diploma</label>
         <InputDate class="form-control" id="diplomaYear" @bind-Value="s.DiplomaYear" placeholder="Inserisci l'anno di conseguimento del diploma" />
-    </div>
-    <button type="submit" class="btn btn-primary">Inserisci studente</button>
+    </div>    
+    <button type="submit" class="btn btn-primary" >Inserisci studente</button>
 </EditForm>
+
 
 
 <!--TABLE-->
 <h1>Partecipanti al corso</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
 
 @if (students == null)
-{    
+{
 }
 else
 {
+
     <table class="table">
         <thead>
-            <tr>
+            <tr>                
                 <th>Nome</th>
                 <th>Cognome</th>
                 <th>Data di nascita</th>
@@ -74,26 +73,35 @@ else
                 <th>Telefono</th>
                 <th>Diploma</th>
                 <th>Diplomato nel</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var student in students)
              {
-                <tr>
-                    <td>@student.Name</td>
-                    <td>@student.Surname</td>
-                    <td>@student.BirthDate.Date.ToString("dd-mm-yyyy")</td>
-                    <td>@student.Address</td>
-                    <td>@student.City</td>
-                    <td>@student.Email</td>
-                    <td>@student.PhoneNumber</td>
-                    <td>@student.DiplomaType</td>
-                    <td>@student.DiplomaYear.Date.Year</td>
-                </tr>
+            <tr>
+                <td>@student.Name</td>
+                <td>@student.Surname</td>
+                <td>@student.BirthDate.Date.ToString("dd-mm-yyyy")</td>
+                <td>@student.Address</td>
+                <td>@student.City</td>
+                <td>@student.Email</td>
+                <td>@student.PhoneNumber</td>
+                <td>@student.DiplomaType</td>
+                <td>@student.DiplomaYear.Date.Year</td>
+                <td><button class="btn btn-danger" @onclick="@(() => DeleteStudent(student))">Elimina</button></td>
+                <td><a href="/students/insertstudents">Modifica</a></td>
+                <td><a href="/students/insertstudents">Inserisci</a></td>
+            </tr>
              }
         </tbody>
     </table>
+
 }
+
+
 
 
 @code {
@@ -103,7 +111,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         students = await studentService.GetStudentAsync(s.Name, s.Surname, s.BirthDate, s.Address, s.City, s.Email, s.PhoneNumber, s.DiplomaType, s.DiplomaYear);
-        students = await db.Students 
+        students = await db.Students
             .ToArrayAsync();
     }
 
@@ -113,9 +121,21 @@ else
         db.SaveChanges();
         students = db.Students
             .ToArray();
-
         StateHasChanged();
         s = new Student();
     }
+
+    private void DeleteStudent(Student s)
+    {
+        db.Students.Remove(s);
+        db.SaveChanges();
+        students = db.Students
+            .ToArray();
+        StateHasChanged();
+    }
+
+    
+
+
 
 }

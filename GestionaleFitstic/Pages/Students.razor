@@ -1,0 +1,121 @@
+﻿@page "/students"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext db
+@inject StudentService studentService
+
+
+
+<h3>Inserisci un nuovo partecipante</h3>
+
+<!--FORM-->
+<EditForm Model="@s" OnSubmit="()=> SaveStudent()">
+    <div class="form-group">
+        <label>Nome</label>
+        <InputText class="form-control" id="name" @bind-Value="s.Name" placeholder="Inserisci il nome" />
+    </div>
+    <div class="form-group">
+        <label>Cognome</label>
+        <InputText class="form-control" id="surname" @bind-Value="s.Surname" placeholder="Inserisci il cognome" />
+    </div>
+    <div class="form-group">
+        <label>Data di nascita</label>
+        <InputDate class="form-control" id="birthDate" @bind-Value="s.BirthDate" placeholder="Inserisci la data di nascita" />
+    </div>
+    <div class="form-group">
+        <label>Indirizzo</label>
+        <InputText class="form-control" id="address" @bind-Value="s.Address" placeholder="Inserisci l'indirizzo" />
+    </div>
+    <div class="form-group">
+        <label>Città</label>
+        <InputText class="form-control" id="city" @bind-Value="s.City" placeholder="Inserisci la città" />
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <InputText class="form-control" id="email" @bind-Value="s.Email" placeholder="Inserisci la email" />
+    </div>
+    <div class="form-group">
+        <label>Telefono</label>
+        <InputNumber class="form-control" id="phoneNumber" @bind-Value="s.PhoneNumber" placeholder="Inserisci il numero di telefono" />
+    </div>
+    <div class="form-group">
+        <label>Tipo di diploma</label>
+        <InputText class="form-control" id="diplomaType" @bind-Value="s.DiplomaType" placeholder="Inserisci il tipo di diploma" />
+    </div>
+    <div class="form-group">
+        <label>Anno di diploma</label>
+        <InputDate class="form-control" id="diplomaYear" @bind-Value="s.DiplomaYear" placeholder="Inserisci l'anno di conseguimento del diploma" />
+    </div>
+    <button type="submit" class="btn btn-primary">Inserisci studente</button>
+</EditForm>
+
+
+<!--TABLE-->
+<h1>Partecipanti al corso</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (students == null)
+{    
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Data di nascita</th>
+                <th>Indirizzo</th>
+                <th>Città</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Diploma</th>
+                <th>Diplomato nel</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+             {
+                <tr>
+                    <td>@student.Name</td>
+                    <td>@student.Surname</td>
+                    <td>@student.BirthDate.Date.ToString("dd-mm-yyyy")</td>
+                    <td>@student.Address</td>
+                    <td>@student.City</td>
+                    <td>@student.Email</td>
+                    <td>@student.PhoneNumber</td>
+                    <td>@student.DiplomaType</td>
+                    <td>@student.DiplomaYear.Date.Year</td>
+                </tr>
+             }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private Student s = new Student();
+    private Student[] students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await studentService.GetStudentAsync(s.Name, s.Surname, s.BirthDate, s.Address, s.City, s.Email, s.PhoneNumber, s.DiplomaType, s.DiplomaYear);
+        students = await db.Students 
+            .ToArrayAsync();
+    }
+
+    private void SaveStudent()
+    {
+        db.Students.Add(s);
+        db.SaveChanges();
+        students = db.Students
+            .ToArray();
+
+        StateHasChanged();
+        s = new Student();
+    }
+
+}

@@ -5,8 +5,6 @@
 @inject ApplicationDbContext db
 @inject StudentService studentService
 
-
-
 <h3>Inserisci un nuovo partecipante</h3>
 <!--FORM-->
 <EditForm Model="@s" OnSubmit="()=> SaveStudent()">
@@ -49,11 +47,8 @@
     <button type="submit" class="btn btn-primary" >Inserisci studente</button>
 </EditForm>
 
-
-
 <!--TABLE-->
 <h1>Partecipanti al corso</h1>
-
 
 @if (students == null)
 {
@@ -100,9 +95,6 @@ else
     </table>
 
 }
-
-
-
 
 @code {
     private Student s = new Student();

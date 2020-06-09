@@ -6,7 +6,6 @@
 @inject ApplicationDbContext db
 @inject StudentService studentService
 @inject NavigationManager Navi
-
 <!-- FORM EDIT -->
 <h3>Modifica un nuovo partecipante</h3>
 
@@ -74,4 +73,4 @@
         await db.SaveChangesAsync();
         Navi.NavigateTo("/students");
     }
-}
+} 

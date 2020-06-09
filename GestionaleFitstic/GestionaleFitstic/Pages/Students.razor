@@ -44,7 +44,7 @@
         <label>Anno di diploma</label>
         <InputDate class="form-control" id="diplomaYear" @bind-Value="s.DiplomaYear" placeholder="Inserisci l'anno di conseguimento del diploma" />
     </div>    
-    <button type="submit" class="btn btn-primary" >Inserisci studente</button>
+    <button type="submit" class="btn btn-primary">Inserisci studente</button>
 </EditForm>
 
 <!--TABLE-->
@@ -87,7 +87,7 @@ else
                 <td>@student.DiplomaType</td>
                 <td>@student.DiplomaYear.Date.Year</td>
                 <td><button class="btn btn-danger" @onclick="@(() => DeleteStudent(student))">Elimina</button></td>
-                <td><a href="/students/insertstudents">Modifica</a></td>
+                <td><a class="btn btn-warning" href="/studentdetail/@student.Id">Modifica</a></td>
                 <td><a href="/students/insertstudents">Inserisci</a></td>
             </tr>
              }

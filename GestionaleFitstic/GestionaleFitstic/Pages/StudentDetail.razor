@@ -1,15 +1,24 @@
 ﻿@page "/studentdetail/{StudentId:int}"
-@page "/studentdetail/"
+@page "/studentdetail"
 
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
 @inject StudentService studentService
 @inject NavigationManager Navi
-<!-- FORM EDIT -->
-<h3>Modifica un nuovo partecipante</h3>
 
-<EditForm Model="@st" OnSubmit="()=>EditStudent()">
+<!-- FORM EDIT -->
+
+@if (StudentId == 0)
+{
+    <h3>Inserisci un nuovo partecipante</h3>
+}
+else
+{
+    <h3>Modifica un partecipante</h3>
+}
+
+<EditForm Model="@st" OnSubmit="()=>SaveStudent()">
     <div class="form-group">
         <label>Nome</label>
         <InputText class="form-control" id="name" @bind-Value="st.Name" />
@@ -36,7 +45,7 @@
     </div>
     <div class="form-group">
         <label>Telefono</label>
-        <InputNumber class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
+        <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
     </div>
     <div class="form-group">
         <label>Tipo di diploma</label>
@@ -44,33 +53,56 @@
     </div>
     <div class="form-group">
         <label>Anno di diploma</label>
-        <InputDate class="form-control" id="diplomaYear" @bind-Value="st.DiplomaYear" />
+        <InputNumber class="form-control" id="diplomaYear" @bind-Value="st.DiplomaYear" />
     </div>
     <button type="submit" class="btn btn-warning">Salva modifiche</button>
 </EditForm>
 
 @code {
-    private Student st = new Student();
+            private Student st;
 
-    private Student[] students;
-    [Parameter]
-    public int StudentId { get; set; }
+            private Student[] students;
+            [Parameter]
+            public int StudentId { get; set; }
 
+            protected override async Task OnInitializedAsync()
+            {
+                if(StudentId == 0)
+                {
+                    st = new Student()
+                    { BirthDate = DateTime.Now,
+                        DiplomaYear = DateTime.Now.Year
+                };
+            }
+        else
+        {
+            st = await db.Students.FindAsync(StudentId);
+        }
+    }
 
-    private async Task EditStudent()
+    private async Task SaveStudent()
     {
-        var s = db.Students.Find(StudentId);
-        s.Name = st.Name;
-        s.Surname = st.Surname;
-        s.BirthDate = s.BirthDate;
-        s.City = st.City;
-        s.Address = st.Address;
-        s.Email = st.Email;
-        s.PhoneNumber = st.PhoneNumber;
-        s.DiplomaType = st.DiplomaType;
-        s.DiplomaYear = st.DiplomaYear;
-
-        await db.SaveChangesAsync();
+        if (StudentId == 0)
+        {
+            db.Students.Add(st);
+            await db.SaveChangesAsync();
+            StateHasChanged();
+            st = new Student();
+        }
+        else
+        {
+            var s = db.Students.Find(StudentId);
+            s.Name = st.Name;
+            s.Surname = st.Surname;
+            s.BirthDate = s.BirthDate;
+            s.City = st.City;
+            s.Address = st.Address;
+            s.Email = st.Email;
+            s.PhoneNumber = st.PhoneNumber;
+            s.DiplomaType = st.DiplomaType;
+            s.DiplomaYear = st.DiplomaYear;
+            await db.SaveChangesAsync();
+        }
         Navi.NavigateTo("/students");
     }
 } 

@@ -7,7 +7,7 @@ namespace GestionaleFitstic.Data
 {
     public class StudentService
     {        
-        public Task <Student[]> GetStudentAsync(string name, string surname, DateTime birthDate, string address, string city, string email, int phoneNumber, string diplomaType, DateTime diplomaYear)
+        public Task <Student[]> GetStudentAsync(string name, string surname, DateTime birthDate, string address, string city, string email, string phoneNumber, string diplomaType, int diplomaYear)
         {
             return Task.FromResult(Enumerable.Range(1, 10).Select(index => new Student
             {

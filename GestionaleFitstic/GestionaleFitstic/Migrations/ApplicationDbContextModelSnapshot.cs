@@ -178,8 +178,8 @@ namespace GestionaleFitstic.Migrations
                     b.Property<string>("DiplomaType")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DiplomaYear")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DiplomaYear")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -192,6 +192,7 @@ namespace GestionaleFitstic.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

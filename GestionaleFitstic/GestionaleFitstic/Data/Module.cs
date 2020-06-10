@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,14 +10,21 @@ namespace GestionaleFitstic.Data
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Subject { get; set; }
+        [Required]
         public Course Course { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
         public DateTime EndDate { get; set; }
+        [Required]
         public Staff Teacher { get; set; }
+        [Required]
         public Staff Tutor { get; set; }
         public Module()
-        { }       
+        { }
     }
 }

@@ -14,7 +14,7 @@ namespace GestionaleFitstic.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4");
+                .HasAnnotation("ProductVersion", "3.1.5");
 
             modelBuilder.Entity("GestionaleFitstic.Data.Course", b =>
                 {
@@ -26,15 +26,17 @@ namespace GestionaleFitstic.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Year")
+                    b.Property<string>("Year")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -51,13 +53,13 @@ namespace GestionaleFitstic.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Grade")
-                        .HasColumnType("REAL");
-
-                    b.Property<int?>("ModuleId")
+                    b.Property<int>("Grade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("StudentId")
+                    b.Property<int>("ModuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StudentId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -75,25 +77,27 @@ namespace GestionaleFitstic.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CourseId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Subject")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TeacherId")
+                    b.Property<int>("TeacherId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TutorId")
+                    b.Property<int>("TutorId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -113,20 +117,20 @@ namespace GestionaleFitstic.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CourseId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("studentId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("studentId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Registrations");
                 });
@@ -141,23 +145,26 @@ namespace GestionaleFitstic.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("GestionaleFitstic.Data.Student", b =>
@@ -176,6 +183,7 @@ namespace GestionaleFitstic.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DiplomaType")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("DiplomaYear")
@@ -188,8 +196,9 @@ namespace GestionaleFitstic.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(9);
 
                     b.Property<string>("Surname")
                         .IsRequired()
@@ -420,37 +429,51 @@ namespace GestionaleFitstic.Migrations
                 {
                     b.HasOne("GestionaleFitstic.Data.Module", "Module")
                         .WithMany()
-                        .HasForeignKey("ModuleId");
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GestionaleFitstic.Data.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GestionaleFitstic.Data.Module", b =>
                 {
                     b.HasOne("GestionaleFitstic.Data.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GestionaleFitstic.Data.Staff", "Teacher")
                         .WithMany()
-                        .HasForeignKey("TeacherId");
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GestionaleFitstic.Data.Staff", "Tutor")
                         .WithMany()
-                        .HasForeignKey("TutorId");
+                        .HasForeignKey("TutorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GestionaleFitstic.Data.Registration", b =>
                 {
                     b.HasOne("GestionaleFitstic.Data.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("GestionaleFitstic.Data.Student", "student")
+                    b.HasOne("GestionaleFitstic.Data.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("studentId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

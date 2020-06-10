@@ -3,7 +3,6 @@
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
-@inject StudentService studentService
 
 <!--TABLE-->
 <h1>Partecipanti al corso</h1>
@@ -36,7 +35,7 @@ else
                 <tr>
                     <td>@student.Name</td>
                     <td>@student.Surname</td>
-                    <td>@student.BirthDate.Date.ToString("dd-mm-yyyy")</td>
+                    <td>@student.BirthDate.ToString("dd/MM/yyyy")</td>
                     <td>@student.Address</td>
                     <td>@student.City</td>
                     <td>@student.Email</td>
@@ -53,7 +52,7 @@ else
 }
 
 @code {
-    private Student[] students;
+    private Student[] students;   
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,4 +68,5 @@ else
             .ToArray();
         StateHasChanged();
     }
+
 }

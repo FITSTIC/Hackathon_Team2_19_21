@@ -4,7 +4,6 @@
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
-@inject StudentService studentService
 @inject NavigationManager Navi
 
 <!-- FORM EDIT -->
@@ -18,62 +17,64 @@ else
     <h3>Modifica un partecipante</h3>
 }
 
-<EditForm Model="@st" OnSubmit="()=>SaveStudent()">
-    <div class="form-group">
-        <label>Nome</label>
-        <InputText class="form-control" id="name" @bind-Value="st.Name" />
-    </div>
-    <div class="form-group">
-        <label>Cognome</label>
-        <InputText class="form-control" id="surname" @bind-Value="st.Surname" />
-    </div>
-    <div class="form-group">
-        <label>Data di nascita</label>
-        <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
-    </div>
-    <div class="form-group">
-        <label>Indirizzo</label>
-        <InputText class="form-control" id="address" @bind-Value="st.Address" />
-    </div>
-    <div class="form-group">
-        <label>Città</label>
-        <InputText class="form-control" id="city" @bind-Value="st.City" />
-    </div>
-    <div class="form-group">
-        <label>Email</label>
-        <InputText class="form-control" id="email" @bind-Value="st.Email" />
-    </div>
-    <div class="form-group">
-        <label>Telefono</label>
-        <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
-    </div>
-    <div class="form-group">
-        <label>Tipo di diploma</label>
-        <InputText class="form-control" id="diplomaType" @bind-Value="st.DiplomaType" />
-    </div>
-    <div class="form-group">
-        <label>Anno di diploma</label>
-        <InputNumber class="form-control" id="diplomaYear" @bind-Value="st.DiplomaYear" />
-    </div>
-    <button type="submit" class="btn btn-warning">Salva modifiche</button>
+<EditForm Model="@st" OnValidSubmit="()=>SaveStudent()">
+    <DataAnnotationsValidator/>
+        <div class="form-group">
+            <label>Nome</label>
+            <InputText class="form-control" id="name" @bind-Value="st.Name" />
+        </div>
+        <div class="form-group">
+            <label>Cognome</label>
+            <InputText class="form-control" id="surname" @bind-Value="st.Surname" />
+        </div>
+        <div class="form-group">
+            <label>Data di nascita</label>
+            <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
+        </div>
+        <div class="form-group">
+            <label>Indirizzo</label>
+            <InputText class="form-control" id="address" @bind-Value="st.Address" />
+        </div>
+        <div class="form-group">
+            <label>Città</label>
+            <InputText class="form-control" id="city" @bind-Value="st.City" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <InputText class="form-control" id="email" @bind-Value="st.Email" />
+        </div>
+        <div class="form-group">
+            <label>Telefono</label>
+            <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
+        </div>
+        <div class="form-group">
+            <label>Tipo di diploma</label>
+            <InputText class="form-control" id="diplomaType" @bind-Value="st.DiplomaType" />
+        </div>
+        <div class="form-group">
+            <label>Anno di diploma</label>
+            <InputNumber class="form-control" id="diplomaYear" @bind-Value="st.DiplomaYear" />
+        </div>
+        <button type="submit" class="btn btn-warning">Salva modifiche</button>
+   
 </EditForm>
 
 @code {
-            private Student st;
+    private Student st;
 
-            private Student[] students;
-            [Parameter]
-            public int StudentId { get; set; }
+    private Student[] students;
+    [Parameter]
+    public int StudentId { get; set; }
 
-            protected override async Task OnInitializedAsync()
-            {
-                if(StudentId == 0)
-                {
-                    st = new Student()
-                    { BirthDate = DateTime.Now,
-                        DiplomaYear = DateTime.Now.Year
-                };
-            }
+    protected override async Task OnInitializedAsync()
+    {
+        if(StudentId == 0)
+        {
+            st = new Student()
+            { BirthDate = DateTime.Now,
+                DiplomaYear = DateTime.Now.Year
+        };
+    }
         else
         {
             st = await db.Students.FindAsync(StudentId);
@@ -90,17 +91,7 @@ else
             st = new Student();
         }
         else
-        {
-            var s = db.Students.Find(StudentId);
-            s.Name = st.Name;
-            s.Surname = st.Surname;
-            s.BirthDate = s.BirthDate;
-            s.City = st.City;
-            s.Address = st.Address;
-            s.Email = st.Email;
-            s.PhoneNumber = st.PhoneNumber;
-            s.DiplomaType = st.DiplomaType;
-            s.DiplomaYear = st.DiplomaYear;
+        {           
             await db.SaveChangesAsync();
         }
         Navi.NavigateTo("/students");

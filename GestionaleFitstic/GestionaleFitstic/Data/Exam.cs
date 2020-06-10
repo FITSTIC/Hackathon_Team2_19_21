@@ -10,10 +10,14 @@ namespace GestionaleFitstic.Data
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public Student Student { get; set; }
+        [Required]
         public Module Module { get; set; }
+        [Required]
         public DateTime Date { get; set; }
-        public double Grade { get; set; }
+        [Range(0, 100)]
+        public int Grade { get; set; }
         public Exam()
         { }
     }

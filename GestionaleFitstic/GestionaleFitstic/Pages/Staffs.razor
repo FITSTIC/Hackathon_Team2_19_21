@@ -1,0 +1,76 @@
+﻿@page "/staffs"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject IJSRuntime JSRuntime
+<!--TABLE-->
+<h1>Personale della fondazione</h1>
+<a href="/staffdetail" class="btn btn-primary">Inserisci</a>
+
+@if (staffs == null)
+{
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Data di nascita</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Data di assunzione</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var staff in staffs)
+            {
+                <tr>
+                    <td>@staff.Name</td>
+                    <td>@staff.Surname</td>
+                    <td>@staff.BirthDate.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@staff.Email</td>
+                    <td>@staff.PhoneNumber</td>
+                    <td>@staff.StartDate</td>
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteStaff(staff))">Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/staffdetail/@staff.Id">Modifica</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private Staff[] staffs;
+    string message = "Stai eliminando un personale, sei sicuro?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        staffs = await db.Staffs
+            .ToArrayAsync();
+    }
+
+    private async Task DeleteStaff(Staff s)
+    {
+        bool resultY = await ConfirmDelete();
+        if (resultY)
+        {
+            db.Staffs.Remove(s);
+            db.SaveChanges();
+            staffs = db.Staffs
+                .ToArray();
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> ConfirmDelete()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
+}

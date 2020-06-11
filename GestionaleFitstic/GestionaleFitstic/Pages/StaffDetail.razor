@@ -1,0 +1,97 @@
+﻿@page "/staffdetail/{StaffId:int}"
+@page "/staffdetail"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject NavigationManager Navi
+@inject IJSRuntime JSRuntime
+<!-- FORM EDIT -->
+
+@if (StaffId == 0)
+{
+    <h3>Inserisci un nuovo personale</h3>
+}
+else
+{
+    <h3>Modifica il personale</h3>
+}
+
+<EditForm Model="@st" OnSubmit="() => SaveStaff()">
+    <div class="form-group">
+        <label>Nome</label>
+        <InputText class="form-control" id="name" @bind-Value="st.Name" />
+    </div>
+    <div class="form-group">
+        <label>Cognome</label>
+        <InputText class="form-control" id="surname" @bind-Value="st.Surname" />
+    </div>
+    <div class="form-group">
+        <label>Data di nascita</label>
+        <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <InputText class="form-control" id="email" @bind-Value="st.Email" />
+    </div>
+    <div class="form-group">
+        <label>Telefono</label>
+        <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
+    </div>
+    <div class="form-group">
+        <label>Data di assunzione</label>
+        <InputDate class="form-control" id="start date" @bind-Value="st.StartDate" />
+    </div>
+    <button type="submit" class="btn btn-warning">Salva modifiche</button>
+</EditForm>
+
+@code {
+    private Staff st;
+
+    private Staff[] staffs;
+    [Parameter]
+    public int StaffId { get; set; }
+    string message = "Vuoi salvare i cambiamenti?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (StaffId == 0)
+        {
+            st = new Staff()
+            {
+                BirthDate = DateTime.Now,
+                StartDate = DateTime.Now
+            };
+        }
+        else
+        {
+            st = await db.Staffs.FindAsync(StaffId);
+        }
+    }
+
+    private async Task SaveStaff()
+    {
+        bool resultY = await ConfirmSave();
+        if (resultY)
+        {
+            if (StaffId == 0)
+            {
+                db.Staffs.Add(st);
+                await db.SaveChangesAsync();
+                StateHasChanged();
+                st = new Staff();
+            }
+            else
+            {
+                await db.SaveChangesAsync();
+            }
+            Navi.NavigateTo("/staffs");
+        }
+    }
+
+    private async Task<bool> ConfirmSave()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
+}

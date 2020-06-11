@@ -17,7 +17,7 @@ namespace GestionaleFitstic.Data
         public DateTime BirthDate { get; set; }
         [Required]
         public string Email { get; set; }
-        [Range(9, 9)]
+        [StringLength(10)]
         public string PhoneNumber { get; set; }
         public DateTime StartDate { get; set; }
 

@@ -1,0 +1,78 @@
+﻿@page "/coursedetail/{CourseId:int}"
+@page "/coursedetail"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject NavigationManager Navi
+<!-- FORM EDIT -->
+
+@if (CourseId == 0)
+{
+    <h3>Inserisci un nuovo partecipante</h3>
+}
+else
+{
+    <h3>Modifica un partecipante</h3>
+}
+
+<EditForm Model="@c" OnValidSubmit="()=>SaveCourse()">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Nome</label>
+        <InputText class="form-control" id="name" @bind-Value="c.Name" />
+    </div>    
+    <div class="form-group">
+        <label>Data inizio</label>
+        <InputDate class="form-control" id="startDate" @bind-Value="c.StartDate" />
+    </div>
+    <div class="form-group">
+        <label>Data fine</label>
+        <InputDate class="form-control" id="endDate" @bind-Value="c.EndDate" />
+    </div>
+    <div class="form-group">
+        <label>Sede</label>
+        <InputText class="form-control" id="location" @bind-Value="c.Location" />
+    </div>    
+    <button type="submit" class="btn btn-warning">Salva modifiche</button>
+</EditForm>
+
+@code {
+    private Course c;
+
+    private Course[] courses;
+    [Parameter]
+    public int CourseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CourseId == 0)
+        {
+            c = new Course()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now                
+            };
+        }
+        else
+        {
+            c = await db.Courses.FindAsync(CourseId);
+        }
+    }
+
+    private async Task SaveCourse()
+    {
+        if (CourseId == 0)
+        {
+            db.Courses.Add(c);
+            await db.SaveChangesAsync();
+            StateHasChanged();
+            c = new Course();
+        }
+        else
+        {
+            await db.SaveChangesAsync();
+        }
+        Navi.NavigateTo("/courses");
+    }
+} 

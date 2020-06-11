@@ -1,0 +1,63 @@
+﻿@page "/courses"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+<!--TABLE-->
+<h1>Corsi</h1>
+<a href="/coursedetail" class="btn btn-primary">Inserisci</a>
+
+@if (courses == null)
+{
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Anno scolastico</th>
+                <th>Inizio</th>
+                <th>Fine</th>
+                <th>Sede</th>                
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courses)
+            {
+                <tr>
+                    <td>@course.Name</td>
+                    <td>@course.StartDate.ToString("yyyy") - @course.EndDate.ToString("yy")</td>
+                    <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@course.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@course.Location</td>                    
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteCourse(course))">Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Modifica</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private Course[] courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        courses = await db.Courses
+            .ToArrayAsync();
+    }
+
+    private void DeleteCourse(Course c)
+    {
+        db.Courses.Remove(c);
+        db.SaveChanges();
+        courses = db.Courses
+            .ToArray();
+        StateHasChanged();
+    }
+
+}

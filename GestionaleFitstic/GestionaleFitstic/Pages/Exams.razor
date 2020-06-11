@@ -1,0 +1,61 @@
+﻿@page "/exams"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+<!--TABLE-->
+<h1>Esami del corso</h1>
+<a href="/examdetail" class="btn btn-primary">Inserisci</a>
+
+@if (exams == null)
+{
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Alunno</th>
+                <th>Modulo</th>
+                <th>Data dell'esame</th>
+                <th>Voto</th>                
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var exam in exams)
+            {
+                <tr>
+                    <td>@exam.Student.Name</td>
+                    <td>@exam.Module.Name</td>
+                    <td>@exam.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@exam.Grade</td>                    
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteExam(exam))">Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/examdetail/@exam.Id">Modifica</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private Exam[] exams;
+
+    protected override async Task OnInitializedAsync()
+    {
+        exams = await db.Exams
+            .ToArrayAsync();
+    }
+
+    private void DeleteExam(Exam e)
+    {
+        db.Exams.Remove(e);
+        db.SaveChanges();
+        exams = db.Exams
+            .ToArray();
+        StateHasChanged();
+    }
+
+}

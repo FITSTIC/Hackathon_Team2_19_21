@@ -1,0 +1,89 @@
+﻿@page "/examdetail/{ExamId:int}"
+@page "/examdetail"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject NavigationManager Navi
+@inject IJSRuntime JSRuntime
+<!-- FORM EDIT -->
+
+@if (ExamId == 0)
+{
+    <h3>Inserisci un nuovo esame</h3>
+}
+else
+{
+    <h3>Modifica un esame</h3>
+}
+
+<EditForm Model="@e" OnValidSubmit="()=>SaveExam()">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Alunno</label>
+        <InputNumber class="form-control" id="student" @bind-Value="e.StudentId" />
+    </div>
+    <div class="form-group">
+        <label>Modulo</label>
+        <InputNumber class="form-control" id="module" @bind-Value="e.ModuleId" />
+    </div>
+    <div class="form-group">
+        <label>Data dell'esame</label>
+        <InputDate class="form-control" id="examDate" @bind-Value="e.Date" />
+    </div>
+    <div class="form-group">
+        <label>Voto</label>
+        <InputNumber class="form-control" id="grade" @bind-Value="e.Grade" />
+    </div>
+    <button type="submit" class="btn btn-success">Salva modifiche</button>
+</EditForm>
+
+@code {
+    private Exam e;
+    private Exam[] exames;
+    [Parameter]
+    public int ExamId { get; set; }
+    string message = "Vuoi salvare i cambiamenti?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ExamId == 0)
+        {
+            e = new Exam()
+            {
+                Date = DateTime.Now,
+                Grade = 0
+            };
+        }
+        else
+        {
+            e = await db.Exams.FindAsync(ExamId);
+        }
+    }
+
+    private async Task SaveExam()
+    {
+        bool resultY = await ConfirmSave();
+        if (resultY)
+        {
+            if (ExamId == 0)
+            {
+                db.Exams.Add(e);
+                await db.SaveChangesAsync();
+                StateHasChanged();
+                e = new Exam();
+            }
+            else
+            {
+                await db.SaveChangesAsync();
+            }
+            Navi.NavigateTo("/exams");
+        }
+    }
+
+    private async Task<bool> ConfirmSave()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
+} 

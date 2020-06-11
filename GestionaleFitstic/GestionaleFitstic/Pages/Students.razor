@@ -3,7 +3,7 @@
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
-
+@inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Partecipanti al corso</h1>
 <a href="/studentdetail" class="btn btn-primary">Inserisci</a>
@@ -49,24 +49,35 @@ else
         </tbody>
     </table>
 
-}
+    @code {
+        private Student[] students;
+        string message = "Stai eliminando uno studente, sei sicuro?";
 
-@code {
-    private Student[] students;   
+        protected override async Task OnInitializedAsync()
+        {
+            students = await db.Students
+                .ToArrayAsync();
+        }
 
-    protected override async Task OnInitializedAsync()
-    {
-        students = await db.Students
-            .ToArrayAsync();
+        private async Task DeleteStudent(Student s)
+        {
+            bool resultY = await ConfirmDelete();
+            if (resultY)
+            {
+                db.Students.Remove(s);
+                db.SaveChanges();
+                students = db.Students
+                    .ToArray();
+                StateHasChanged();
+            }
+        }
+
+        private async Task<bool> ConfirmDelete()
+        {
+            bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+            return result;
+        }
     }
 
-    private void DeleteStudent(Student s)
-    {
-        db.Students.Remove(s);
-        db.SaveChanges();
-        students = db.Students
-            .ToArray();
-        StateHasChanged();
-    }
 
 }

@@ -5,6 +5,7 @@
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
 @inject NavigationManager Navi
+@inject IJSRuntime JSRuntime
 <!-- FORM EDIT -->
 
 @if (CourseId == 0)
@@ -21,7 +22,7 @@ else
     <div class="form-group">
         <label>Nome</label>
         <InputText class="form-control" id="name" @bind-Value="c.Name" />
-    </div>    
+    </div>
     <div class="form-group">
         <label>Data inizio</label>
         <InputDate class="form-control" id="startDate" @bind-Value="c.StartDate" />
@@ -33,16 +34,16 @@ else
     <div class="form-group">
         <label>Sede</label>
         <InputText class="form-control" id="location" @bind-Value="c.Location" />
-    </div>    
-    <button type="submit" class="btn btn-warning">Salva modifiche</button>
+    </div>
+    <button type="submit" class="btn btn-success">Salva modifiche</button>
 </EditForm>
 
 @code {
     private Course c;
-
     private Course[] courses;
     [Parameter]
     public int CourseId { get; set; }
+    string message = "Vuoi salavre i cambiamenti?";
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,7 +52,7 @@ else
             c = new Course()
             {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now                
+                EndDate = DateTime.Now
             };
         }
         else
@@ -62,17 +63,28 @@ else
 
     private async Task SaveCourse()
     {
-        if (CourseId == 0)
+        bool resultY = await ConfirmSave();
+        if (resultY)
         {
-            db.Courses.Add(c);
-            await db.SaveChangesAsync();
-            StateHasChanged();
-            c = new Course();
+            if (CourseId == 0)
+            {
+                db.Courses.Add(c);
+                await db.SaveChangesAsync();
+                StateHasChanged();
+                c = new Course();
+            }
+            else
+            {
+                await db.SaveChangesAsync();
+            }
+            Navi.NavigateTo("/courses");
         }
-        else
-        {
-            await db.SaveChangesAsync();
-        }
-        Navi.NavigateTo("/courses");
+
+    }
+
+    private async Task<bool> ConfirmSave()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
     }
 } 

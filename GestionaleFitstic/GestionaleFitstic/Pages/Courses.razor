@@ -3,6 +3,7 @@
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
+@inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Corsi</h1>
 <a href="/coursedetail" class="btn btn-primary">Inserisci</a>
@@ -19,7 +20,7 @@ else
                 <th>Anno scolastico</th>
                 <th>Inizio</th>
                 <th>Fine</th>
-                <th>Sede</th>                
+                <th>Sede</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -32,7 +33,7 @@ else
                     <td>@course.StartDate.ToString("yyyy") - @course.EndDate.ToString("yy")</td>
                     <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@course.EndDate.ToString("dd/MM/yyyy")</td>
-                    <td>@course.Location</td>                    
+                    <td>@course.Location</td>
                     <td><button class="btn btn-danger" @onclick="@(() => DeleteCourse(course))">Elimina</button></td>
                     <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Modifica</a></td>
                 </tr>
@@ -44,6 +45,7 @@ else
 
 @code {
     private Course[] courses;
+    string message = "Stai eliminando un corso, sei sicuro?";
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,13 +53,22 @@ else
             .ToArrayAsync();
     }
 
-    private void DeleteCourse(Course c)
+    private async Task DeleteCourse(Course c)
     {
-        db.Courses.Remove(c);
-        db.SaveChanges();
-        courses = db.Courses
-            .ToArray();
-        StateHasChanged();
+        bool resultY = await ConfirmDelete();
+        if (resultY)
+        {
+            db.Courses.Remove(c);
+            db.SaveChanges();
+            courses = db.Courses
+                .ToArray();
+            StateHasChanged();
+        }
     }
 
+    private async Task<bool> ConfirmDelete()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
 }

@@ -18,6 +18,7 @@ else
 }
 
 <EditForm Model="@st" OnSubmit="() => SaveStaff()">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label>Nome</label>
         <InputText class="form-control" id="name" @bind-Value="st.Name" />

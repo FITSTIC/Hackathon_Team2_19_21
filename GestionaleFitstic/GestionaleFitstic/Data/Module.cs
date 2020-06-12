@@ -25,6 +25,14 @@ namespace GestionaleFitstic.Data
         [Required]
         public Staff Tutor { get; set; }
         public Module()
-        { }
+        { 
+        
+        }
+
+        public Module(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 }

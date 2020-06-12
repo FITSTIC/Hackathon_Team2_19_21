@@ -20,12 +20,24 @@ else
 <EditForm Model="@e" OnValidSubmit="()=>SaveExam()">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Alunno</label>
-        <InputNumber class="form-control" id="student" @bind-Value="e.StudentId" />
+        <label>Studente</label>
+        <InputSelectNumber class="form-control" id="student" @bind-Value="e.StudentId">
+            <option value="">Seleziona uno studente</option>
+            @foreach (var student in students)
+            {
+                <option value="@student.Id">@student.Name</option>
+            }
+        </InputSelectNumber>
     </div>
     <div class="form-group">
         <label>Modulo</label>
-        <InputNumber class="form-control" id="module" @bind-Value="e.ModuleId" />
+        <InputSelectNumber class="form-control" id="module" @bind-Value="e.ModuleId">
+            <option value="">Seleziona un modulo</option>
+            @foreach (var module in modules)
+            {
+                <option value="@module.Id">@module.Name</option>
+            }
+        </InputSelectNumber>
     </div>
     <div class="form-group">
         <label>Data dell'esame</label>
@@ -41,12 +53,24 @@ else
 @code {
     private Exam e;
     private Exam[] exames;
+    private Student[] students;
+    private Module[] modules;
     [Parameter]
     public int ExamId { get; set; }
     string message = "Vuoi salvare i cambiamenti?";
 
     protected override async Task OnInitializedAsync()
     {
+        students = await db.Students
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToArrayAsync();
+
+        modules = await db.Modules
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToArrayAsync();
+
         if (ExamId == 0)
         {
             e = new Exam()

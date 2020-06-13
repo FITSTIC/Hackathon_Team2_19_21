@@ -27,6 +27,6 @@ namespace GestionaleFitstic.Data
         public int DiplomaYear { get; set; }
 
         public Student()
-        { }
+        { }       
     }
 }

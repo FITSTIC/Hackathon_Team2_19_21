@@ -10,11 +10,11 @@
 
 @if (StudentId == 0)
 {
-    <h3>Inserisci un nuovo partecipante</h3>
+    <h3>Stai inserendo un nuovo partecipante</h3>
 }
 else
 {
-    <h3>Modifica un partecipante</h3>
+    <h3>Modifica i dati di @st.Name @st.Surname</h3>
 }
 
 <EditForm Model="@st" OnValidSubmit="() => SaveStudent()">
@@ -44,7 +44,7 @@ else
         <InputText class="form-control" id="email" @bind-Value="st.Email" />
     </div>
     <div class="form-group">
-        <label>Telefono</label>
+        <label>Cellulare</label>
         <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
     </div>
     <div class="form-group">
@@ -60,11 +60,9 @@ else
 </EditForm>
 
 @code {
-    private Student st;
-
-    private Student[] students;
     [Parameter]
     public int StudentId { get; set; }
+    private Student st;
     string message = "Vuoi salvare i cambiamenti?";
 
     protected override async Task OnInitializedAsync()
@@ -73,7 +71,8 @@ else
         {
             st = new Student()
             {
-                BirthDate = DateTime.Now
+                BirthDate = DateTime.Now,
+                DiplomaYear = 2000
             };
         }
         else
@@ -91,8 +90,7 @@ else
             {
                 db.Students.Add(st);
                 await db.SaveChangesAsync();
-                StateHasChanged();
-                st = new Student();
+                StateHasChanged();                
             }
             else
             {

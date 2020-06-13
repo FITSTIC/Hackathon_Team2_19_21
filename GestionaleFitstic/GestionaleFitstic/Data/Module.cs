@@ -13,18 +13,24 @@ namespace GestionaleFitstic.Data
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Subject { get; set; }
-        [Required]
+        public string Subject { get; set; }        
         public Course Course { get; set; }
+        [Required]
+        public int? CourseId { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
-        [Required]
         public Staff Teacher { get; set; }
         [Required]
+        public int? TeacherId { get; set; }
         public Staff Tutor { get; set; }
+        [Required]
+        public int? TutorId { get; set; }
         public Module()
         { }
+
+        
+
     }
 }

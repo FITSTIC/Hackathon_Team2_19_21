@@ -6,7 +6,7 @@
 @inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Corsi</h1>
-<a href="/coursedetail" class="btn btn-primary">Inserisci</a>
+<a href="/coursedetail" class="btn btn-primary">Nuovo corso</a>
 
 @if (courses == null)
 {
@@ -50,6 +50,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         courses = await db.Courses
+            .OrderBy(x => x.Name)
             .ToArrayAsync();
     }
 
@@ -61,6 +62,7 @@ else
             db.Courses.Remove(c);
             db.SaveChanges();
             courses = db.Courses
+                .OrderBy(x => x.Name)
                 .ToArray();
             StateHasChanged();
         }

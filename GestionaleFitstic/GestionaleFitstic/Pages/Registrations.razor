@@ -1,0 +1,79 @@
+﻿@page "/registrations"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject IJSRuntime JSRuntime
+<!--TABLE-->
+<h1>Iscrizioni al corso</h1>
+<a href="/registrationdetail" class="btn btn-primary">Nuova iscrizione</a>
+
+@if (registrations == null)
+{
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data di iscrizione</th>
+                <th>Studente</th>
+                <th>Iscritto al corso</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var registration in registrations)
+            {
+                <tr>
+                    <td>@registration.RegDate.ToString("dd/MM/yyyy")</td>
+                    <td>@registration.Student?.Name @registration.Student?.Surname</td>
+                    <td>@registration.Course?.Name</td>                    
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteRegistration(registration))">Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/registrationdetail/@registration.Id">Modifica</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private Registration[] registrations;
+    string message = "Stai per eliminare una registrazione, sei sicuro?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        registrations = await db.Registrations
+            .OrderBy(x=>x.RegDate)
+            .Include(x => x.Student)
+            .Include(x => x.Course)
+            .ToArrayAsync();
+    }
+
+    private async Task DeleteRegistration(Registration r)
+    {
+        bool resultY = await ConfirmDelete();
+        if (resultY)
+        {
+
+            db.Registrations.Remove(r);
+            db.SaveChanges();
+            registrations = await db.Registrations
+                .OrderBy(x => x.RegDate)
+                .Include(x => x.Student)
+                .Include(x => x.Course)
+                .ToArrayAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> ConfirmDelete()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+
+    }
+
+}

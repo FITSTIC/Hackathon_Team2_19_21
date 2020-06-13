@@ -10,14 +10,15 @@
 
 @if (StaffId == 0)
 {
-    <h3>Inserisci un nuovo personale</h3>
+    <h3>Stai inserendo un nuovo membro dello staff</h3>
 }
 else
 {
-    <h3>Modifica il personale</h3>
+    <h3>Modifica i dati di @st.Name @st.Surname</h3>
 }
 
-<EditForm Model="@st" OnSubmit="() => SaveStaff()">
+<EditForm Model="@st" OnValidSubmit="() => SaveStaff()">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label>Nome</label>
         <InputText class="form-control" id="name" @bind-Value="st.Name" />
@@ -78,8 +79,7 @@ else
             {
                 db.Staffs.Add(st);
                 await db.SaveChangesAsync();
-                StateHasChanged();
-                st = new Staff();
+                StateHasChanged();                
             }
             else
             {

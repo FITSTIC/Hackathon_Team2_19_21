@@ -6,7 +6,7 @@
 @inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Personale della fondazione</h1>
-<a href="/staffdetail" class="btn btn-primary">Inserisci</a>
+<a href="/staffdetail" class="btn btn-primary">Nuovo membro</a>
 
 @if (staffs == null)
 {
@@ -16,11 +16,11 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Nome</th>
                 <th>Cognome</th>
+                <th>Nome</th>
                 <th>Data di nascita</th>
                 <th>Email</th>
-                <th>Telefono</th>
+                <th>Cellulare</th>
                 <th>Data di assunzione</th>
                 <th></th>
                 <th></th>
@@ -30,12 +30,12 @@ else
             @foreach (var staff in staffs)
             {
                 <tr>
-                    <td>@staff.Name</td>
                     <td>@staff.Surname</td>
+                    <td>@staff.Name</td>
                     <td>@staff.BirthDate.Date.ToString("dd/MM/yyyy")</td>
                     <td>@staff.Email</td>
                     <td>@staff.PhoneNumber</td>
-                    <td>@staff.StartDate</td>
+                    <td>@staff.StartDate.Date.ToString("dd/MM/yyyy")</td>
                     <td><button class="btn btn-danger" @onclick="@(() => DeleteStaff(staff))">Elimina</button></td>
                     <td><a class="btn btn-warning" href="/staffdetail/@staff.Id">Modifica</a></td>
                 </tr>
@@ -52,6 +52,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         staffs = await db.Staffs
+            .OrderBy(x => x.Surname)
             .ToArrayAsync();
     }
 
@@ -63,6 +64,7 @@ else
             db.Staffs.Remove(s);
             db.SaveChanges();
             staffs = db.Staffs
+                .OrderBy(x=>x.Surname)
                 .ToArray();
             StateHasChanged();
         }

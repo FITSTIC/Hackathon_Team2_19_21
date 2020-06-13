@@ -1,5 +1,5 @@
-﻿@page "/examdetail/{ExamId:int}"
-@page "/examdetail"
+﻿@page "/registrationdetail/{RegistrationId:int}"
+@page "/registrationdetail"
 
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
@@ -8,20 +8,24 @@
 @inject IJSRuntime JSRuntime
 <!-- FORM EDIT -->
 
-@if (ExamId == 0)
+@if (RegistrationId == 0)
 {
-    <h3>Inserisci un nuovo esame</h3>
+    <h3>Iscrivi un nuovo studente</h3>
 }
 else
 {
-    <h3>Modifica l'esame di @e.Student.Surname @e.Student.Name</h3>
+    <h3>Modifica iscrizione di @r.Student.Surname @r.Student.Name</h3>
 }
 
-<EditForm Model="@e" OnValidSubmit="()=>SaveExam()">
-    <DataAnnotationsValidator/>
+<EditForm Model="@r" OnValidSubmit="()=>SaveRegistration()">
+    <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Alunno</label>
-        <InputSelectNumber class="form-control" id="student" @bind-Value="e.StudentId">
+        <label>Data di iscrizione</label>
+        <InputDate class="form-control" id="regDate" @bind-Value="r.RegDate"/>            
+    </div>
+    <div class="form-group">
+        <label>Partecipante</label>        
+        <InputSelectNumber class="form-control" id="student" @bind-Value="r.StudentId">
             <option value="">Scegli uno studente</option>
             @foreach (var student in students)
             {
@@ -30,32 +34,24 @@ else
         </InputSelectNumber>
     </div>
     <div class="form-group">
-        <label>Modulo</label>
-        <InputSelectNumber class="form-control" id="module" @bind-Value="e.ModuleId">
-            <option value="">Scegli un modulo</option>
-            @foreach (var module in modules)
+        <label>Iscrivi al corso</label>
+        <InputSelectNumber class="form-control" id="course" @bind-Value="r.CourseId">
+            <option value="">Scegli un corso</option>
+            @foreach (var course in courses)
             {
-                <option value="@module.Id">@module.Name</option>
+                <option value="@course.Id">@course.Name</option>
             }
         </InputSelectNumber>
-    </div>
-    <div class="form-group">
-        <label>Data dell'esame</label>
-        <InputDate class="form-control" id="examDate" @bind-Value="e.Date" />
-    </div>
-    <div class="form-group">
-        <label>Voto</label>
-        <InputNumber class="form-control" id="grade" @bind-Value="e.Grade" />
     </div>
     <button type="submit" class="btn btn-success">Salva modifiche</button>
 </EditForm>
 
 @code {
     [Parameter]
-    public int ExamId { get; set; }
-    private Exam e;
+    public int RegistrationId { get; set; }
+    private Registration r;
     private Student[] students;
-    private Module[] modules;
+    private Course[] courses;
     string message = "Vuoi salvare i cambiamenti?";
 
     protected override async Task OnInitializedAsync()
@@ -65,39 +61,39 @@ else
             .OrderBy(x => x.Surname)
             .ToArrayAsync();
 
-        modules = await db.Modules
-            //.AsNoTracking() 
+        courses = await db.Courses
+            //.AsNoTracking()
             .OrderBy(x => x.Name)
             .ToArrayAsync();
 
-        if (ExamId == 0)
+        if (RegistrationId == 0)
         {
-            e = new Exam()
+            r = new Registration()
             {
-                Date = DateTime.Now,                
+                RegDate = DateTime.Now               
             };
         }
         else
         {
-            e = await db.Exams.FindAsync(ExamId);
+            r = await db.Registrations.FindAsync(RegistrationId);
         }
     }
 
-    private async Task SaveExam()
+    private async Task SaveRegistration()
     {
         bool resultY = await ConfirmSave();
         if (resultY)
         {
-            if (ExamId == 0)
+            if (RegistrationId == 0)
             {
-                db.Exams.Add(e);
+                db.Registrations.Add(r);
                 await db.SaveChangesAsync();
             }
             else
             {
                 await db.SaveChangesAsync();
             }
-            Navi.NavigateTo("/exams");
+            Navi.NavigateTo("/registrations");
         }
     }
 

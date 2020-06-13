@@ -20,6 +20,7 @@ namespace GestionaleFitstic.Data
         [Required]
         public string Location { get; set; }
         public Course()
-        { }
+        {           
+        }    
     }
 }

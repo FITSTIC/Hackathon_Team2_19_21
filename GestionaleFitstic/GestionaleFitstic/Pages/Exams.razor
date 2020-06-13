@@ -3,9 +3,10 @@
 @using GestionaleFitstic.Data
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
+@inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Esami del corso</h1>
-<a href="/examdetail" class="btn btn-primary">Inserisci</a>
+<a href="/examdetail" class="btn btn-primary">Nuovo esame</a>
 
 @if (exams == null)
 {
@@ -18,7 +19,7 @@ else
                 <th>Alunno</th>
                 <th>Modulo</th>
                 <th>Data dell'esame</th>
-                <th>Voto</th>                
+                <th>Voto</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -27,10 +28,10 @@ else
             @foreach (var exam in exams)
             {
                 <tr>
-                    <td>@exam.Student.Name</td>
-                    <td>@exam.Module.Name</td>
+                    <td>@exam.Student?.Name</td>
+                    <td>@exam.Module?.Name</td>
                     <td>@exam.Date.ToString("dd/MM/yyyy")</td>
-                    <td>@exam.Grade</td>                    
+                    <td>@exam.Grade</td>
                     <td><button class="btn btn-danger" @onclick="@(() => DeleteExam(exam))">Elimina</button></td>
                     <td><a class="btn btn-warning" href="/examdetail/@exam.Id">Modifica</a></td>
                 </tr>
@@ -42,20 +43,36 @@ else
 
 @code {
     private Exam[] exams;
+    string message = "Stai per eliminare una registrazione, sei sicuro?";
 
     protected override async Task OnInitializedAsync()
     {
         exams = await db.Exams
+            .OrderBy(x => x.Date)
+            .Include(x => x.Student)
+            .Include(x => x.Module)
             .ToArrayAsync();
     }
 
-    private void DeleteExam(Exam e)
+    private async Task DeleteExam(Exam e)
     {
-        db.Exams.Remove(e);
-        db.SaveChanges();
-        exams = db.Exams
-            .ToArray();
-        StateHasChanged();
+        bool resultY = await ConfirmDelete();
+        if (resultY)
+        {
+            db.Exams.Remove(e);
+            db.SaveChanges();
+            exams = await db.Exams
+                .OrderBy(x => x.Date)
+                .Include(x => x.Student)
+                .Include(x => x.Module)
+                .ToArrayAsync();
+            StateHasChanged();
+        }
     }
 
+    private async Task<bool> ConfirmDelete()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
 }

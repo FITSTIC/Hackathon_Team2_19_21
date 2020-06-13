@@ -11,11 +11,13 @@ namespace GestionaleFitstic.Data
         [Key]
         public int Id { get; set; }
         [Required]
-        public DateTime RegDate { get; set; }
-        [Required]
+        public DateTime RegDate { get; set; }        
         public Course Course { get; set; }
         [Required]
+        public int CourseId { get; set; }
         public Student Student { get; set; }
+        [Required]
+        public int StudentId { get; set; }
         public Registration()
         { }
     }

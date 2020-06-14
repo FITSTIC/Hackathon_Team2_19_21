@@ -1,0 +1,132 @@
+﻿@page "/moduledetail/{ModuleId:int}"
+@page "/moduledetail"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject NavigationManager Navi
+@inject IJSRuntime JSRuntime
+<!-- FORM EDIT -->
+@if (ModuleId == 0)
+{
+    <h3>Inserisci un nuovo modulo</h3>
+}
+else
+{
+    <h3>Modifica il modulo</h3>
+}
+<EditForm Model="@md" OnValidSubmit="() => SaveModule()">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Nome del modulo</label>
+        <InputText class="form-control" id="name" @bind-Value="md.Name" />
+    </div>
+    <div class="form-group">
+        <label>Materia insegnata</label>
+        <InputText class="form-control" id="subject" @bind-Value="md.Subject" />
+    </div>
+    <div class="form-group">
+        <label>Corso di appartenenza</label>
+        <InputSelectNumber class="form-control" @bind-Value="md.CourseId">
+            <option value="">Seleziona un corso</option>
+            @foreach (var course in courses)
+            {
+                <option value="@course.Id">@course.Name</option>
+            }
+        </InputSelectNumber>
+    </div>
+    <div class="form-group">
+        <label>Data di inizio</label>
+        <InputDate class="form-control" id="StartDate" @bind-Value="md.StartDate" />
+    </div>
+    <div class="form-group">
+        <label>Data di fine</label>
+        <InputDate class="form-control" id="end date" @bind-Value="md.EndDate" />
+    </div>
+    <div class="form-group">
+        <label>Insegnante</label>
+        <InputSelectNumber class="form-control" @bind-Value="md.TeacherId">
+            <option value="">Seleziona un insegnante</option>
+            @foreach (var teacher in teachers)
+            {
+                <option value="@teacher.Id">@teacher.Name @teacher.Surname</option>
+            }
+        </InputSelectNumber>
+    </div>
+    <div class="form-group">
+        <label>Tutor</label>
+        <InputSelectNumber class="form-control" @bind-Value="md.TutorId">
+            <option value="">Seleziona un tutor</option>
+            @foreach (var tutor in tutors)
+            {
+                <option value="@tutor.Id">@tutor.Name @tutor.Surname</option>
+            }
+        </InputSelectNumber>
+    </div>
+    <button type="submit" class="btn btn-success">Salva modifiche</button>
+</EditForm>
+
+@code { private Module md;
+
+    private Module[] modules;
+    private Course[] courses;
+    private Staff[] teachers;
+    private Staff[] tutors;
+    [Parameter]
+    public int ModuleId { get; set; }
+    string message = "Vuoi salvare i cambiamenti?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        courses = await db.Courses
+            .AsNoTracking() //per reperire dati in sola lettura
+            .OrderBy(x => x.Name)
+            .ToArrayAsync();
+
+        tutors = await db.Staffs
+            .AsNoTracking() //per reperire dati in sola lettura
+            .OrderBy(x => x.Name)
+            .ToArrayAsync();
+
+        teachers = await db.Staffs
+            .AsNoTracking() //per reperire dati in sola lettura
+            .OrderBy(x => x.Name)
+            .ToArrayAsync();
+
+        if (ModuleId == 0)
+        {
+            md = new Module()
+            {
+                StartDate = DateTime.Now
+            };
+        }
+        else
+        {
+            md = await db.Modules.FindAsync(ModuleId);
+        }
+    }
+
+    private async Task SaveModule()
+    {
+        bool resultY = await ConfirmSave();
+        if (resultY)
+        {
+            if (ModuleId == 0)
+            {
+                db.Modules.Add(md);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                await db.SaveChangesAsync();
+            }
+            Navi.NavigateTo("/modules");
+        }
+    }
+
+    private async Task<bool> ConfirmSave()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+    }
+}

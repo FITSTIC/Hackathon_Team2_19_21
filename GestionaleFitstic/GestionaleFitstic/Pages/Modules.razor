@@ -1,0 +1,88 @@
+﻿@page "/modules"
+
+@using GestionaleFitstic.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext db
+@inject IJSRuntime JSRuntime
+<!--TABLE-->
+<h1>Moduli del corso</h1>
+<a href="/moduledetail" class="btn btn-primary">Nuovo modulo</a>
+
+@if (modules == null)
+{
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome del modulo</th>
+                <th>Materia insegnata</th>
+                <th>Corso di appartenenza</th>
+                <th>Data di inizio</th>
+                <th>Data di fine</th>
+                <th>Docente che insegna il modulo</th>
+                <th>Tutor che segue il modulo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var module in modules)
+            {
+                <tr>
+                    <td>@module.Name</td>
+                    <td>@module.Subject</td>
+                    <th>@module.Course?.Name</th>
+                    <td>@module.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@module.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@module.Teacher?.Name @module.Teacher?.Surname</td>
+                    <td>@module.Tutor?.Name @module.Tutor?.Surname</td>
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteModule(module))">Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/moduledetail/@module.Id">Modifica</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private Module[] modules;
+    string message = "Stai per eliminare un modulo, sei sicuro?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        modules = await db.Modules
+            .OrderBy(x => x.StartDate)
+             .Include(x => x.Course)
+            .Include(x => x.Teacher)
+            .Include(x => x.Tutor)
+            .ToArrayAsync();
+    }
+
+    private async Task DeleteModule(Module m)
+    {
+        bool resultY = await ConfirmDelete();
+        if (resultY)
+        {
+
+            db.Modules.Remove(m);
+            db.SaveChanges();
+            modules = await db.Modules
+                .OrderBy(x => x.StartDate)
+                .Include(x => x.Course)
+                .Include(x => x.Teacher)
+                .Include(x => x.Tutor)
+                .ToArrayAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> ConfirmDelete()
+    {
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        return result;
+
+    }
+
+}

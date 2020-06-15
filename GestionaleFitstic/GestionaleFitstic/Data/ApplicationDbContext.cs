@@ -18,6 +18,6 @@ namespace GestionaleFitstic.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Module> Modules { get; set; }
         public DbSet<Registration> Registrations { get; set; }
-        public DbSet<Staff> Staffs { get; set; } 
+        public DbSet<Staff> Staffs { get; set; }        
     }
 }

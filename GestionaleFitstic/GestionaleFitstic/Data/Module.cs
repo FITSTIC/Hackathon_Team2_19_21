@@ -29,8 +29,7 @@ namespace GestionaleFitstic.Data
         public int? TutorId { get; set; }
         public Module()
         { }
-
-        
-
     }
+
+    
 }

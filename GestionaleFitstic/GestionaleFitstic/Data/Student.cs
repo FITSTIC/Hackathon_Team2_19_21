@@ -16,10 +16,13 @@ namespace GestionaleFitstic.Data
         public string Surname { get; set; }
         [Required]
         public DateTime BirthDate { get; set; }
+        [Required]
         public string Address { get; set; }
+        [Required]
         public string City { get; set; }
+        [EmailAddress] [Required]
         public string Email { get; set; }
-        [StringLength(10)]
+        [Phone]
         public string PhoneNumber { get; set; }
         [Required]
         public string DiplomaType { get; set; }

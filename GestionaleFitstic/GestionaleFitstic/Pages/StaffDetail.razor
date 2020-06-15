@@ -17,7 +17,7 @@ else
     <h3>Modifica i dati di @st.Name @st.Surname</h3>
 }
 
-<EditForm Model="@st" OnValidSubmit="() => SaveStaff()">
+<EditForm Model="@st" OnValidSubmit="() => SaveStaff()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Nome</label>
@@ -32,27 +32,37 @@ else
         <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
     </div>
     <div class="form-group">
-        <label>Email</label>
-        <InputText class="form-control" id="email" @bind-Value="st.Email" />
+        <label>Mansione</label>
+        <InputSelect class="form-control" @bind-Value="st.Jobs">
+            <option value="">Mansione</option>
+            @foreach (var job in Enum.GetValues(typeof(JobType)))
+            {
+                <option value="@job">@job</option>
+            }
+        </InputSelect>
     </div>
-    <div class="form-group">
-        <label>Telefono</label>
-        <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
-    </div>
-    <div class="form-group">
-        <label>Data di assunzione</label>
-        <InputDate class="form-control" id="start date" @bind-Value="st.StartDate" />
-    </div>
-    <button type="submit" class="btn btn-success">Salva modifiche</button>
+        <div class="form-group">
+            <label>Email</label>
+            <InputText class="form-control" id="email" @bind-Value="st.Email" />
+        </div>
+        <div class="form-group">
+            <label>Telefono</label>
+            <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
+        </div>
+
+        <div class="form-group">
+            <label>Data di assunzione</label>
+            <InputDate class="form-control" id="start date" @bind-Value="st.StartDate" />
+        </div>
+        <button type="submit" class="btn btn-success">Salva modifiche</button>
 </EditForm>
 
-@code {
+@code {    
     private Staff st;
-
-    private Staff[] staffs;
     [Parameter]
     public int StaffId { get; set; }
-    string message = "Vuoi salvare i cambiamenti?";
+    string saveMessage = "Vuoi salvare i cambiamenti?";
+    string fillFieldsMessage = "Completa correttamente tutti i campi evidenziati in rosso per continuare";
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,8 +80,16 @@ else
         }
     }
 
+    private async Task CompleteFields()
+    {
+        await JSRuntime.InvokeAsync<object>("alert", fillFieldsMessage);
+    }
+
     private async Task SaveStaff()
     {
+        st.Name = st.Name.Substring(0,1).ToUpper() + st.Name.Substring(1).ToLower();
+        st.Surname = st.Surname.Substring(0,1).ToUpper() + st.Surname.Substring(1).ToLower();
+        st.Email = st.Email.ToLower();
         bool resultY = await ConfirmSave();
         if (resultY)
         {
@@ -79,7 +97,7 @@ else
             {
                 db.Staffs.Add(st);
                 await db.SaveChangesAsync();
-                StateHasChanged();                
+                StateHasChanged();
             }
             else
             {
@@ -91,7 +109,7 @@ else
 
     private async Task<bool> ConfirmSave()
     {
-        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { saveMessage });
         return result;
     }
 }

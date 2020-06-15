@@ -13,35 +13,35 @@
 }
 else
 {
-    <table class="table">
-        <thead>
+<table id="courses" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Cognome</th>
+            <th>Nome</th>
+            <th>Data di nascita</th>
+            <th>Email</th>
+            <th>Cellulare</th>
+            <th>Mansione</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var staff in staffs)
+         {
             <tr>
-                <th>Cognome</th>
-                <th>Nome</th>
-                <th>Data di nascita</th>
-                <th>Email</th>
-                <th>Cellulare</th>
-                <th>Data di assunzione</th>
-                <th></th>
-                <th></th>
+                <td>@(staff.Surname.Substring(0,1).ToUpper() + staff.Surname.Substring(1).ToLower())</td>
+                <td>@(staff.Name.Substring(0,1).ToUpper() + staff.Surname.Substring(1).ToLower())</td>
+                <td>@staff.BirthDate.Date.ToString("dd/MM/yyyy")</td>
+                <td>@staff.Email.ToLower()</td>
+                <td>@staff.PhoneNumber</td>
+                <td>@staff.Jobs</td>
+                <td><button class="btn btn-danger" @onclick="@(() => DeleteStaff(staff))">Elimina</button></td>
+                <td><a class="btn btn-warning" href="/staffdetail/@staff.Id">Modifica</a></td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var staff in staffs)
-            {
-                <tr>
-                    <td>@staff.Surname</td>
-                    <td>@staff.Name</td>
-                    <td>@staff.BirthDate.Date.ToString("dd/MM/yyyy")</td>
-                    <td>@staff.Email</td>
-                    <td>@staff.PhoneNumber</td>
-                    <td>@staff.StartDate.Date.ToString("dd/MM/yyyy")</td>
-                    <td><button class="btn btn-danger" @onclick="@(() => DeleteStaff(staff))">Elimina</button></td>
-                    <td><a class="btn btn-warning" href="/staffdetail/@staff.Id">Modifica</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+         }
+    </tbody>
+</table>
 
 }
 

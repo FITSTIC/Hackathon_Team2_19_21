@@ -17,7 +17,7 @@ else
     <h3>Modifica l'esame di @e.Student.Surname @e.Student.Name</h3>
 }
 
-<EditForm Model="@e" OnValidSubmit="()=>SaveExam()">
+<EditForm Model="@e" OnValidSubmit="()=>SaveExam()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator/>
     <div class="form-group">
         <label>Alunno</label>
@@ -56,7 +56,9 @@ else
     private Exam e;
     private Student[] students;
     private Module[] modules;
-    string message = "Vuoi salvare i cambiamenti?";
+    string saveMessage = "Vuoi salvare i cambiamenti?";
+    string fillFieldsMessage = "Completa correttamente tutti i campi evidenziati in rosso per continuare";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,13 +76,18 @@ else
         {
             e = new Exam()
             {
-                Date = DateTime.Now,                
+                Date = DateTime.Now,
             };
         }
         else
         {
             e = await db.Exams.FindAsync(ExamId);
         }
+    }
+
+    private async Task CompleteFields()
+    {
+        await JSRuntime.InvokeAsync<object>("alert", fillFieldsMessage);
     }
 
     private async Task SaveExam()
@@ -103,7 +110,7 @@ else
 
     private async Task<bool> ConfirmSave()
     {
-        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { saveMessage });
         return result;
     }
 } 

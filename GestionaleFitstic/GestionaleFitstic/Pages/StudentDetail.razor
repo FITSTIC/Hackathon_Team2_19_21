@@ -17,7 +17,7 @@ else
     <h3>Modifica i dati di @st.Name @st.Surname</h3>
 }
 
-<EditForm Model="@st" OnValidSubmit="() => SaveStudent()">
+<EditForm Model="@st" OnValidSubmit="() => SaveStudent()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Nome</label>
@@ -63,7 +63,9 @@ else
     [Parameter]
     public int StudentId { get; set; }
     private Student st;
-    string message = "Vuoi salvare i cambiamenti?";
+    string saveMessage = "Vuoi salvare i cambiamenti?";
+    string fillFieldsMessage = "Completa correttamente tutti i campi evidenziati in rosso per continuare";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,8 +83,19 @@ else
         }
     }
 
+    private async Task CompleteFields()
+    {
+        await JSRuntime.InvokeAsync<object>("alert", fillFieldsMessage);
+    }
+
     private async Task SaveStudent()
     {
+        st.Name = st.Name.Substring(0,1).ToUpper() + st.Name.Substring(1).ToLower();
+        st.Surname = st.Surname.Substring(0,1).ToUpper() + st.Surname.Substring(1).ToLower();
+        st.Address = st.Address.ToLower();
+        st.City = st.City.Substring(0,1).ToUpper() + st.City.Substring(1).ToLower();
+        st.Email = st.Email.ToLower();
+        st.DiplomaType = st.DiplomaType.Substring(0,1).ToUpper() + st.DiplomaType.Substring(1).ToLower();
         bool resultY = await ConfirmSave();
         if (resultY)
         {
@@ -90,7 +103,7 @@ else
             {
                 db.Students.Add(st);
                 await db.SaveChangesAsync();
-                StateHasChanged();                
+                StateHasChanged();
             }
             else
             {
@@ -102,7 +115,7 @@ else
 
     private async Task<bool> ConfirmSave()
     {
-        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { saveMessage });
         return result;
     }
 }

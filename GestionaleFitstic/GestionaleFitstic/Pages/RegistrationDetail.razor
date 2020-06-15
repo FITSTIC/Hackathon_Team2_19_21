@@ -17,7 +17,7 @@ else
     <h3>Modifica iscrizione di @r.Student.Surname @r.Student.Name</h3>
 }
 
-<EditForm Model="@r" OnValidSubmit="()=>SaveRegistration()">
+<EditForm Model="@r" OnValidSubmit="()=>SaveRegistration()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Data di iscrizione</label>
@@ -52,7 +52,9 @@ else
     private Registration r;
     private Student[] students;
     private Course[] courses;
-    string message = "Vuoi salvare i cambiamenti?";
+    string saveMessage = "Vuoi salvare i cambiamenti?";
+    string fillFieldsMessage = "Completa correttamente tutti i campi evidenziati in rosso per continuare";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,13 +72,18 @@ else
         {
             r = new Registration()
             {
-                RegDate = DateTime.Now               
+                RegDate = DateTime.Now
             };
         }
         else
         {
             r = await db.Registrations.FindAsync(RegistrationId);
         }
+    }
+
+    private async Task CompleteFields()
+    {
+        await JSRuntime.InvokeAsync<object>("alert", fillFieldsMessage);
     }
 
     private async Task SaveRegistration()
@@ -99,7 +106,7 @@ else
 
     private async Task<bool> ConfirmSave()
     {
-        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { saveMessage });
         return result;
     }
 } 

@@ -15,7 +15,7 @@ else
 {
     <h3>Modifica il modulo</h3>
 }
-<EditForm Model="@md" OnValidSubmit="() => SaveModule()">
+<EditForm Model="@md" OnValidSubmit="() => SaveModule()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Nome del modulo</label>
@@ -66,15 +66,16 @@ else
     <button type="submit" class="btn btn-success">Salva modifiche</button>
 </EditForm>
 
-@code { private Module md;
-
-    private Module[] modules;
+@code { 
+    private Module md;
     private Course[] courses;
     private Staff[] teachers;
     private Staff[] tutors;
     [Parameter]
     public int ModuleId { get; set; }
-    string message = "Vuoi salvare i cambiamenti?";
+    string saveMessage = "Vuoi salvare i cambiamenti?";
+    string fillFieldsMessage = "Completa correttamente tutti i campi evidenziati in rosso per continuare";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,11 +86,13 @@ else
 
         tutors = await db.Staffs
             .AsNoTracking() //per reperire dati in sola lettura
+            .Where (x=>x.Jobs == JobType.Tutor)
             .OrderBy(x => x.Name)
             .ToArrayAsync();
 
         teachers = await db.Staffs
             .AsNoTracking() //per reperire dati in sola lettura
+            .Where(x=>x.Jobs == JobType.Insegnante)
             .OrderBy(x => x.Name)
             .ToArrayAsync();
 
@@ -106,8 +109,15 @@ else
         }
     }
 
+    private async Task CompleteFields()
+    {
+        await JSRuntime.InvokeAsync<object>("alert", fillFieldsMessage);
+    }
+
     private async Task SaveModule()
     {
+        md.Name = md.Name.Substring(0,1).ToUpper() + md.Name.Substring(1).ToLower();
+        md.Subject = md.Subject.Substring(0,1).ToUpper() + md.Subject.Substring(1).ToLower();
         bool resultY = await ConfirmSave();
         if (resultY)
         {
@@ -126,7 +136,7 @@ else
 
     private async Task<bool> ConfirmSave()
     {
-        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
+        bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { saveMessage });
         return result;
     }
 }

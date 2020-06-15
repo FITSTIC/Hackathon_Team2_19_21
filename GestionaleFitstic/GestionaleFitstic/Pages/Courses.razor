@@ -13,33 +13,33 @@
 }
 else
 {
-    <table class="table">
-        <thead>
+    <table id="courses" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Anno scolastico</th>
+            <th>Inizio</th>
+            <th>Fine</th>
+            <th>Sede</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in courses)
+        {
             <tr>
-                <th>Nome</th>
-                <th>Anno scolastico</th>
-                <th>Inizio</th>
-                <th>Fine</th>
-                <th>Sede</th>
-                <th></th>
-                <th></th>
+                <td>@course.Name</td>
+                <td>@course.StartDate.ToString("yyyy") - @course.EndDate.ToString("yy")</td>
+                <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
+                <td>@course.EndDate.ToString("dd/MM/yyyy")</td>
+                <td>@course.Location</td>
+                <td><button class="btn btn-danger" @onclick="@(() => DeleteCourse(course))">Elimina</button></td>
+                <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Modifica</a></td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var course in courses)
-            {
-                <tr>
-                    <td>@course.Name</td>
-                    <td>@course.StartDate.ToString("yyyy") - @course.EndDate.ToString("yy")</td>
-                    <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
-                    <td>@course.EndDate.ToString("dd/MM/yyyy")</td>
-                    <td>@course.Location</td>
-                    <td><button class="btn btn-danger" @onclick="@(() => DeleteCourse(course))">Elimina</button></td>
-                    <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Modifica</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
 }
 

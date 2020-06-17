@@ -13,7 +13,7 @@
 }
 else
 {
-<table id="courses" class="table table-striped table-bordered" style="width:100%">
+<table id="students" class="table table-striped table-bordered" style="width:100%">
     <thead>
         <tr>
             <th>Cognome</th>
@@ -43,7 +43,7 @@ else
                 <td>@(student.DiplomaType.Substring(0,1).ToUpper() + student.DiplomaType.Substring(1).ToLower())</td>
                 <td>@student.DiplomaYear</td>
                 <td><button class="btn btn-danger" @onclick="@(() => DeleteStudent(student))">Elimina</button></td>
-                <td><a class="btn btn-warning" href="/studentdetail/@student.Id">Modifica</a></td>
+                <td><a class="btn btn-warning" href="/studentdetail/@student.Id">Dettagli</a></td>
             </tr>
          }
     </tbody>

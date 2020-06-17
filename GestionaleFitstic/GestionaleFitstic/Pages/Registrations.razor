@@ -13,7 +13,7 @@
 }
 else
 {
-<table id="courses" class="table table-striped table-bordered" style="width:100%">
+<table id="registrations" class="table table-striped table-bordered" style="width:100%">
     <thead>
         <tr>
             <th>Data di iscrizione</th>
@@ -31,7 +31,7 @@ else
                 <td>@registration.Student?.Name @registration.Student?.Surname</td>
                 <td>@registration.Course?.Name</td>
                 <td><button class="btn btn-danger" @onclick="@(() => DeleteRegistration(registration))">Elimina</button></td>
-                <td><a class="btn btn-warning" href="/registrationdetail/@registration.Id">Modifica</a></td>
+                <td><a class="btn btn-warning" href="/registrationdetail/@registration.Id">Dettagli</a></td>
             </tr>
          }
     </tbody>

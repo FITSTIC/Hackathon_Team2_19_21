@@ -35,7 +35,7 @@ else
                 <td>@course.EndDate.ToString("dd/MM/yyyy")</td>
                 <td>@(course.Location.Substring(0,1).ToUpper()+course.Location.Substring(1).ToLower())</td>
                 <td><button class="btn btn-danger" @onclick="@(() => DeleteCourse(course))">Elimina</button></td>
-                <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Modifica</a></td>
+                <td><a class="btn btn-warning" href="/coursedetail/@course.Id">Dettagli</a></td>
             </tr>
          }
     </tbody>

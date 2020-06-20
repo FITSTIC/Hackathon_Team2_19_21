@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GestionaleFitstic.Areas.Identity;
 using GestionaleFitstic.Data;
+using GestionaleFitstic.Features.Messaging;
+using GestionaleFitstic.Areas.Identity.Pages.Account;
 
 namespace GestionaleFitstic
 {
@@ -31,6 +33,7 @@ namespace GestionaleFitstic
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -38,8 +41,10 @@ namespace GestionaleFitstic
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddTransient<MessageService>();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<RegisterModel>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

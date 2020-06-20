@@ -17,12 +17,8 @@ else
     <thead>
         <tr>
             <th>Cognome</th>
-            <th>Nome</th>
-            <th>Data di nascita</th>
-            <th>Indirizzo</th>
-            <th>Città</th>
-            <th>Email</th>
-            <th>Cellulare</th>
+            <th>Nome</th>            
+            <th>Email</th>            
             <th>Diploma</th>
             <th>Diplomato nel</th>
             <th></th>
@@ -34,12 +30,8 @@ else
          {
             <tr>
                 <td>@(student.Surname.Substring(0,1).ToUpper() + student.Surname.Substring(1).ToLower())</td>
-                <td>@(student.Name.Substring(0,1).ToUpper() + student.Name.Substring(1).ToLower())</td>
-                <td>@student.BirthDate.ToString("dd/MM/yyyy")</td>
-                <td>@student.Address.ToLower()</td>
-                <td>@(student.City.Substring(0,1).ToUpper() + student.City.Substring(1).ToLower())</td>
-                <td>@student.Email.ToLower()</td>
-                <td>@student.PhoneNumber</td>
+                <td>@(student.Name.Substring(0,1).ToUpper() + student.Name.Substring(1).ToLower())</td>                
+                <td>@student.Email.ToLower()</td>                
                 <td>@(student.DiplomaType.Substring(0,1).ToUpper() + student.DiplomaType.Substring(1).ToLower())</td>
                 <td>@student.DiplomaYear</td>
                 <td><button class="btn btn-danger" @onclick="@(() => DeleteStudent(student))">Elimina</button></td>

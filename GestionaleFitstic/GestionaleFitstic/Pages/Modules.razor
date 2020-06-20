@@ -24,6 +24,7 @@ else
             <th>Docente</th>
             <th>Tutor</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -32,7 +33,7 @@ else
             <tr>
                 <td>@(module.Name.Substring(0,1).ToUpper() + module.Name.Substring(1).ToLower())</td>
                 <td>@(module.Subject.Substring(0,1).ToUpper() + module.Subject.Substring(1).ToLower())</td>
-                <th>@module.Course?.Name</th>
+                <td>@module.Course?.Name</td>
                 <td>@module.StartDate.ToString("dd/MM/yyyy")</td>
                 <td>@module.EndDate.ToString("dd/MM/yyyy")</td>
                 <td>@module.Teacher?.Name @module.Teacher?.Surname</td>

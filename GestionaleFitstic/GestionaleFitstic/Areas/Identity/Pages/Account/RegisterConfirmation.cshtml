@@ -1,32 +1,32 @@
 ﻿@page
 @model RegisterConfirmationModel
-@inject GestionaleFitstic.Features.Messaging.MessageService ms
+@inject GestionaleFitstic.Services.EmailSender es
 @{
     ViewData["Title"] = "Benvenuto nel GestionaleFitstic!!!";
 }
 
 <h1>@ViewData["Title"]</h1>
-    @{
-        if (@Model.DisplayConfirmAccountLink)
-        {
-            await ms.SendEmailAsync("GestionaleFitstic", "vetricini.fabio@gmail.com", "Fabio", "vetricini.fabio@gmail.com", "questo è un test", "Clicca questo link per confermare la registrazione su GestionaleFitstic: https://localhost:44373/Identity/Account/ConfirmEmail?userId=c123e896-8395-4506-9719-c0d24faa4a4f&code=Q2ZESjhHUjZFNFBRV2QxRWtjbXFodDI5b20vcDJlWHpaS0ZaNDFXaGJDMTNzYjZ2NGNUZmRFWTZ3d09uZnFyK2tVY1JHazdxRk9TU3VrUUVnNHNWVkV4bUM2VnlIVElwOU9Db0VpM29KblJiVmxVYUVPd1Niakp1Mzd0SSsxbWdlaVNEb0pQWDZOWGNRb2lWTjJkbDhYMUtZbVF0cHF3NG5wK2NVYS94UnZCL2t4TDhRdVJTWUdDTzhsa1RJaldTWHE2WXkrN1NEMzJVbVpqMmh4RVJwb1lwU0dLeWlCdVErRXJhWUpxamQ2VnlvSHNocTFYdm4wa3kxU3IxVytZRDN0TVVVdz09&returnUrl=%2F");
-            <body style="background-image: url(https://storepro.io/wp-content/uploads/2019/01/woocommerce-email-marketing-services-770x400.png);
-                 background-repeat: no-repeat; background-position: center; background-size: cover">                 
-                <br />
-                <br />
-                <div>
-                    <p>Ciao @Model.Email </p>
-                    <p>Ti abbiamo inviato un link!</p>
-                    <p>Per favore controlla la tua casella di posta per completare la registrazione</p>
-                </div>
-            </body>
-        }
-        else
-        {
-            <p>
-                Please check your email to confirm your account.
-            </p>
-        }
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+        await es.SendEmailAsync(@Model.Email, "Conferma Registrazione", "Benvenuto nel GestionaleFitstic!! Clicca sul link per completare la registrazione: " + @Model.EmailConfirmationUrl);
+        <body style="background-image: url(https://storepro.io/wp-content/uploads/2019/01/woocommerce-email-marketing-services-770x400.png);
+                 background-repeat: no-repeat; background-position: center; background-size: 80%">
+            <br />
+            <br />
+            <div>                
+                <p>Ciao @Model.Email </p>
+                <p>Ti abbiamo inviato un link!</p>
+                <p>Per favore controlla la tua casella di posta per completare la registrazione</p>                
+            </div>
+        </body>
     }
+    else
+    {
+        <p>
+            Please check your email to confirm your account.
+        </p>
+    }
+}
 
 

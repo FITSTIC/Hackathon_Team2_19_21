@@ -5,7 +5,7 @@
 }
 
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="color:white">@ViewData["Title"]</h1>
 
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -13,52 +13,16 @@
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <!------ Include the above in your HEAD tag ---------->
 
-    <style>
-        .main-head {
-            height: 150px;
-            background: #FFF;
-        }
-
-        .sidenav {
-            height: 100%;
-            background-color: #000;
-            overflow-x: hidden;
-            padding-top: 20px;
-        }
-
+    <style>       
 
         .main {
             padding: 0px 10px;
         }
 
-        .sidenav {
-            width: 20%;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-        }
-
         .register-form {
             width: 200px;
             height: 200px;
             margin: 0 auto;
-        }
-
-        .register-form {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-        }
-
-        .register-main-text {
-            margin-top: 20%;
-            padding: 60px;
-            color: #fff;
-        }
-
-        .register-main-text h2 {
-            font-weight: 300;
         }
 
         .btn-black {
@@ -68,39 +32,37 @@
 </style>
 </head>
 
-<div class="sidenav">
-    <div class="register-main-text">
-        <h2>Register Page</h2>
-        <h1>Benvenuto nel Gestionale FITSTIC</h1>
-    </div>
-</div>
-<div class="main">
-    <div class="col-md-6 col-sm-12">
-        <div class="login-form">
-            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <h4>Crea qui un nuovo account</h4>
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" placeholder="Email">
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" placeholder="Password">
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.ConfirmPassword"></label>
-                    <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Conferma Password">
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <button type="submit" class="btn btn-secondary">Registrati</button>
-            </form>
+<body style="background-image: url(https://1businessworld.com/wp-content/uploads/2020/03/09/AdobeStock_307520309.png);
+        background-repeat: no-repeat;
+        background-position: center">
+    <div class="main">
+        <div class="col-md-6 col-sm-12" style="color:white">
+            <div class="register-form">               
+                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <h4>Crea qui un nuovo account</h4>
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Email">
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password"></label>
+                        <input asp-for="Input.Password" class="form-control" placeholder="Password">
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword"></label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Conferma Password">
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-black">Registrati</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</body>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }

@@ -6,44 +6,47 @@
 @inject IJSRuntime JSRuntime
 <!--TABLE-->
 <h1>Moduli del corso</h1>
-<a href="/moduledetail" class="btn btn-primary">Nuovo modulo</a>
-
-@if (modules == null)
+@if (modules.Length == 0)
 {
+    <br>
+    <p><b>Questa pagina è vuota. Crea un nuovo modulo per visualizzare i dati</b></p>
+    <br>
+    <a href="/moduledetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo modulo</a>
 }
 else
 {
-<table id="modules" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-        <tr>
-            <th>Nome del modulo</th>
-            <th>Materia insegnata</th>
-            <th>Corso di appartenenza</th>
-            <th>Data di inizio</th>
-            <th>Data di fine</th>
-            <th>Docente</th>
-            <th>Tutor</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var module in modules)
-         {
+<a href="/moduledetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo modulo</a>
+    <table id="modules" class="table table-striped table-bordered" style="width:100%">
+        <thead>
             <tr>
-                <td>@(module.Name.Substring(0,1).ToUpper() + module.Name.Substring(1).ToLower())</td>
-                <td>@(module.Subject.Substring(0,1).ToUpper() + module.Subject.Substring(1).ToLower())</td>
-                <td>@module.Course?.Name</td>
-                <td>@module.StartDate.ToString("dd/MM/yyyy")</td>
-                <td>@module.EndDate.ToString("dd/MM/yyyy")</td>
-                <td>@module.Teacher?.Name @module.Teacher?.Surname</td>
-                <td>@module.Tutor?.Name @module.Tutor?.Surname</td>
-                <td><button class="btn btn-danger" @onclick="@(() => DeleteModule(module))">Elimina</button></td>
-                <td><a class="btn btn-warning" href="/moduledetail/@module.Id">Dettagli</a></td>
+                <th>Nome del modulo</th>
+                <th>Materia insegnata</th>
+                <th>Corso di appartenenza</th>
+                <th>Data di inizio</th>
+                <th>Data di fine</th>
+                <th>Docente</th>
+                <th>Tutor</th>
+                <th></th>
+                <th></th>
             </tr>
-         }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var module in modules)
+            {
+                <tr>
+                    <td>@(module.Name.Substring(0, 1).ToUpper() + module.Name.Substring(1).ToLower())</td>
+                    <td>@(module.Subject.Substring(0, 1).ToUpper() + module.Subject.Substring(1).ToLower())</td>
+                    <td>@module.Course?.Name</td>
+                    <td>@module.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@module.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@module.Teacher?.Name @module.Teacher?.Surname</td>
+                    <td>@module.Tutor?.Name @module.Tutor?.Surname</td>
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteModule(module))"><i class="material-icons">delete_forever</i>&nbsp; Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/moduledetail/@module.Id"><i class="material-icons">edit</i>&nbsp; Dettagli</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 }
 

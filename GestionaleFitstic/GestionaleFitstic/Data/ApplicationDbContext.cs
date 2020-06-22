@@ -11,8 +11,7 @@ namespace GestionaleFitstic.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-        }
-        public DbSet<WeatherForecast> Previsioni { get; set; }
+        }        
         public DbSet<Student> Students { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Course> Courses { get; set; }

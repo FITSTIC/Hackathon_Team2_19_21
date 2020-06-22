@@ -96,7 +96,7 @@ namespace GestionaleFitstic.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Email o password errati");
                     return Page();
                 }
             }

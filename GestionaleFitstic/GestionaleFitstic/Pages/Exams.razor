@@ -5,39 +5,44 @@
 @inject ApplicationDbContext db
 @inject IJSRuntime JSRuntime
 <!--TABLE-->
-<h1>Esami del corso</h1>
-<a href="/examdetail" class="btn btn-primary">Nuovo esame</a>
 
-@if (exams == null)
+<h1>Esami del corso</h1>
+@if (exams.Length == 0)
 {
+    <br>
+    <p><b>Questa pagina è vuota. Crea un nuovo esame per visualizzare i dati</b></p>
+    <br>
+    <a href="/examdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>
 }
+
 else
 {
-<table id="exams" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-        <tr>
-            <th>Alunno</th>
-            <th>Modulo</th>
-            <th>Data dell'esame</th>
-            <th>Voto</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var exam in exams)
-         {
+<a href="/examdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>    
+    <table id="exams" class="table table-striped table-bordered" style="width:100%">
+        <thead>
             <tr>
-                <td>@exam.Student?.Name</td>
-                <td>@exam.Module?.Name</td>
-                <td>@exam.Date.ToString("dd/MM/yyyy")</td>
-                <td>@exam.Grade</td>
-                <td><button class="btn btn-danger" @onclick="@(() => DeleteExam(exam))">Elimina</button></td>
-                <td><a class="btn btn-warning" href="/examdetail/@exam.Id">Dettagli</a></td>
+                <th>Alunno</th>
+                <th>Modulo</th>
+                <th>Data dell'esame</th>
+                <th>Voto</th>
+                <th></th>
+                <th></th>
             </tr>
-         }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var exam in exams)
+            {
+                <tr>
+                    <td>@exam.Student?.Name</td>
+                    <td>@exam.Module?.Name</td>
+                    <td>@exam.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@exam.Grade</td>
+                    <td><button class="btn btn-danger" @onclick="@(() => DeleteExam(exam))"><i class="material-icons">delete_forever</i> &nbsp; Elimina</button></td>
+                    <td><a class="btn btn-warning" href="/examdetail/@exam.Id"><i class="material-icons">edit</i> &nbsp; Dettagli</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 }
 

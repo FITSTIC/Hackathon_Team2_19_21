@@ -15,8 +15,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GestionaleFitstic.Areas.Identity;
 using GestionaleFitstic.Data;
-using GestionaleFitstic.Features.Messaging;
 using GestionaleFitstic.Areas.Identity.Pages.Account;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using GestionaleFitstic.Services;
 
 namespace GestionaleFitstic
 {
@@ -39,9 +41,18 @@ namespace GestionaleFitstic
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddTransient<EmailSender>(i=>
+            new EmailSender(
+               Configuration["EmailSender:Host"],
+                Configuration.GetValue<int>("EmailSender:Port"),
+                Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                Configuration["EmailSender:UserName"],
+                Configuration["EmailSender:Password"]
+                )
+            );
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddTransient<MessageService>();
+            services.AddServerSideBlazor();                     
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<RegisterModel>();

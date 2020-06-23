@@ -4,25 +4,30 @@
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
 @inject IJSRuntime JSRuntime
-<!--TABLE-->
+@attribute [Authorize]
+
+<!--DATATABLE-->
 <h1>Personale Fitstic</h1>
+<input type="text" id="searchInput" placeholder="Scrivi qui la tua ricerca..">
+<button class="btn btn-info" @onclick="(()=>Search())"><i class="material-icons">search</i>&nbsp; Cerca</button>
+
 @if (staffs.Length == 0)
 {
     <br>
     <p><b>Questa pagina è vuota. Crea un nuovo membro dello staff per visualizzare i dati</b></p>
     <br>
-    <a href="/staffdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo membro dello staff</a>
+    <a href="/staffdetail" class="btn btn-primary" style="float:right"><i class="material-icons">add</i>&nbsp; Nuovo membro dello staff</a>
 }
+
 else
 {
-<a href="/staffdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo membro dello staff</a>
-    <table id="staffs" class="table table-striped table-bordered" style="width:100%">
-
+    <a href="/staffdetail" class="btn btn-primary" style="float:right"><i class="material-icons">add</i>&nbsp; Nuovo membro dello staff</a>
+    <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>Cognome</th>
                 <th>Nome</th>
-                <th>Data di nascita</th>
+                <th>Mansione</th>
                 <th>Email</th>
                 <th></th>
                 <th></th>
@@ -33,8 +38,8 @@ else
             {
                 <tr>
                     <td>@(staff.Surname.Substring(0,1).ToUpper() + staff.Surname.Substring(1).ToLower())</td>
-                    <td>@(staff.Name.Substring(0,1).ToUpper() + staff.Surname.Substring(1).ToLower())</td>
-                    <td>@staff.BirthDate.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@(staff.Name.Substring(0,1).ToUpper() + staff.Name.Substring(1).ToLower())</td>
+                    <td>@staff.Jobs</td>
                     <td>@staff.Email.ToLower()</td>
                     <td><button class="btn btn-danger" @onclick="@(() => DeleteStaff(staff))"><i class="material-icons">delete_forever</i>&nbsp; Elimina</button></td>
                     <td><a class="btn btn-warning" href="/staffdetail/@staff.Id"><i class="material-icons">edit</i>&nbsp; Dettagli</a></td>
@@ -74,5 +79,10 @@ else
     {
         bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
         return result;
+    }
+
+    private async Task Search()
+    {
+        await JSRuntime.InvokeVoidAsync("search");
     }
 }

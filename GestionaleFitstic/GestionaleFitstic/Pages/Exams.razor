@@ -4,21 +4,26 @@
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext db
 @inject IJSRuntime JSRuntime
-<!--TABLE-->
+@attribute [Authorize]
 
+<!--DATATABLE-->
 <h1>Esami del corso</h1>
+<input type="text" id="searchInput" placeholder="Scrivi qui la tua ricerca..">
+<button class="btn btn-info" @onclick="(()=>Search())"><i class="material-icons">search</i>&nbsp; Cerca</button>
+
 @if (exams.Length == 0)
 {
     <br>
     <p><b>Questa pagina è vuota. Crea un nuovo esame per visualizzare i dati</b></p>
     <br>
-    <a href="/examdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>
+
+    <a href="/examdetail" class="btn btn-primary" style="float: right"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>
 }
 
 else
 {
-<a href="/examdetail" class="btn btn-primary"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>    
-    <table id="exams" class="table table-striped table-bordered" style="width:100%">
+    <a href="/examdetail" class="btn btn-primary" style="float: right"><i class="material-icons">add</i>&nbsp; Nuovo esame</a>
+    <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>Alunno</th>
@@ -33,7 +38,7 @@ else
             @foreach (var exam in exams)
             {
                 <tr>
-                    <td>@exam.Student?.Name</td>
+                    <td>@exam.Student?.Name @exam.Student?.Surname</td>
                     <td>@exam.Module?.Name</td>
                     <td>@exam.Date.ToString("dd/MM/yyyy")</td>
                     <td>@exam.Grade</td>
@@ -45,6 +50,7 @@ else
     </table>
 
 }
+
 
 @code {
     private Exam[] exams;
@@ -80,4 +86,12 @@ else
         bool result = await JSRuntime.InvokeAsync<bool>("confirm", new[] { message });
         return result;
     }
+
+    private async Task Search()
+    {
+        await JSRuntime.InvokeVoidAsync("search");
+    }
 }
+
+
+

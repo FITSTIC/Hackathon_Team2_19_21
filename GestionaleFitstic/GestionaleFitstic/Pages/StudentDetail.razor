@@ -20,39 +20,39 @@ else
 <EditForm Model="@st" OnValidSubmit="() => SaveStudent()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Nome</label>
+        <label for="name">Nome</label>
         <InputText class="form-control" id="name" @bind-Value="st.Name" />
     </div>
     <div class="form-group">
-        <label>Cognome</label>
+        <label for="surname">Cognome</label>
         <InputText class="form-control" id="surname" @bind-Value="st.Surname" />
     </div>
     <div class="form-group">
-        <label>Data di nascita</label>
+        <label for="birthDate">Data di nascita</label>
         <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
     </div>
     <div class="form-group">
-        <label>Indirizzo</label>
+        <label for="address">Indirizzo</label>
         <InputText class="form-control" id="address" @bind-Value="st.Address" />
     </div>
     <div class="form-group">
-        <label>Città</label>
+        <label for="city">Città</label>
         <InputText class="form-control" id="city" @bind-Value="st.City" />
     </div>
     <div class="form-group">
-        <label>Email</label>
+        <label for="email">Email</label>
         <InputText class="form-control" id="email" @bind-Value="st.Email" />
     </div>
     <div class="form-group">
-        <label>Cellulare</label>
+        <label for="phoneNumber">Cellulare</label>
         <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
     </div>
     <div class="form-group">
-        <label>Tipo di diploma</label>
+        <label for="diplomaType">Tipo di diploma</label>
         <InputText class="form-control" id="diplomaType" @bind-Value="st.DiplomaType" />
     </div>
     <div class="form-group">
-        <label>Anno di diploma</label>
+        <label for="diplomaYear">Anno di diploma</label>
         <InputNumber class="form-control" id="diplomaYear" @bind-Value="st.DiplomaYear" />
     </div>
     <button type="submit" class="btn btn-success">Salva modifiche</button>

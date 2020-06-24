@@ -20,20 +20,20 @@ else
 <EditForm Model="@st" OnValidSubmit="() => SaveStaff()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Nome</label>
+        <label for="name">Nome</label>
         <InputText class="form-control" id="name" @bind-Value="st.Name" />
     </div>
     <div class="form-group">
-        <label>Cognome</label>
+        <label for="surname">Cognome</label>
         <InputText class="form-control" id="surname" @bind-Value="st.Surname" />
     </div>
     <div class="form-group">
-        <label>Data di nascita</label>
+        <label for="birthDate">Data di nascita</label>
         <InputDate class="form-control" id="birthDate" @bind-Value="st.BirthDate" />
     </div>
     <div class="form-group">
-        <label>Mansione</label>
-        <InputSelect class="form-control" @bind-Value="st.Jobs">
+        <label for="job">Mansione</label>
+        <InputSelect class="form-control" id="job" @bind-Value="st.Jobs">
             <option value="">Mansione</option>
             @foreach (var job in Enum.GetValues(typeof(JobType)))
             {
@@ -42,17 +42,17 @@ else
         </InputSelect>
     </div>
         <div class="form-group">
-            <label>Email</label>
+            <label for="email">Email</label>
             <InputText class="form-control" id="email" @bind-Value="st.Email" />
         </div>
         <div class="form-group">
-            <label>Telefono</label>
+            <label for="phoneNumber">Telefono</label>
             <InputText class="form-control" id="phoneNumber" @bind-Value="st.PhoneNumber" />
         </div>
 
         <div class="form-group">
-            <label>Data di assunzione</label>
-            <InputDate class="form-control" id="start date" @bind-Value="st.StartDate" />
+            <label for="startDate">Data di assunzione</label>
+            <InputDate class="form-control" id="startDate" @bind-Value="st.StartDate" />
         </div>
         <button type="submit" class="btn btn-success">Salva modifiche</button>
 </EditForm>

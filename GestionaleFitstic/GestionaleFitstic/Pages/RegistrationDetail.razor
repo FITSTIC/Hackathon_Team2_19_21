@@ -20,11 +20,11 @@ else
 <EditForm Model="@r" OnValidSubmit="()=>SaveRegistration()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Data di iscrizione</label>
+        <label for="regDate">Data di iscrizione</label>
         <InputDate class="form-control" id="regDate" @bind-Value="r.RegDate"/>            
     </div>
     <div class="form-group">
-        <label>Partecipante</label>        
+        <label for="student">Partecipante</label>        
         <InputSelectNumber class="form-control" id="student" @bind-Value="r.StudentId">
             <option value="">Scegli uno studente</option>
             @foreach (var student in students)
@@ -34,7 +34,7 @@ else
         </InputSelectNumber>
     </div>
     <div class="form-group">
-        <label>Iscrivi al corso</label>
+        <label for="course">Iscrivi al corso</label>
         <InputSelectNumber class="form-control" id="course" @bind-Value="r.CourseId">
             <option value="">Scegli un corso</option>
             @foreach (var course in courses)

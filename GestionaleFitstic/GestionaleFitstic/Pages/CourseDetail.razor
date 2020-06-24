@@ -20,19 +20,19 @@ else
 <EditForm Model="@c" OnValidSubmit="()=>SaveCourse()" OnInvalidSubmit="()=>CompleteFields()">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label>Nome</label>
+        <label for="name">Nome</label>
         <InputText class="form-control" id="name" @bind-Value="c.Name" />
     </div>
     <div class="form-group">
-        <label>Data inizio</label>
+        <label for="startDate">Data inizio</label>
         <InputDate class="form-control" id="startDate" @bind-Value="c.StartDate" />
     </div>
     <div class="form-group">
-        <label>Data fine</label>
+        <label for="endDate">Data fine</label>
         <InputDate class="form-control" id="endDate" @bind-Value="c.EndDate" />
     </div>
     <div class="form-group">
-        <label>Sede</label>
+        <label for="location">Sede</label>
         <InputText class="form-control" id="location" @bind-Value="c.Location" />
     </div>
     <button type="submit" class="btn btn-success">Salva modifiche</button>
